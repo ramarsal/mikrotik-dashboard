@@ -1,0 +1,98 @@
+this if for the dashboard.blade.php
+
+@extends('layouts.app')
+
+@section('content')
+<div class="container py-4">
+    <h2 class="mb-4">📡 MikroTik Dashboard</h2>
+
+    {{-- Router Info --}}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">CPU Load</h5>
+                    <p class="card-text fs-4">{{ $system[0]['cpu-load'] }}%</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">Uptime</h5>
+                    <p class="card-text fs-5">{{ $system[0]['uptime'] }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">Free Memory</h5>
+                    <p class="card-text fs-5">{{ round($system[0]['free-memory'] / 1024 / 1024, 2) }} MB</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">Total Memory</h5>
+                    <p class="card-text fs-5">{{ round($system[0]['total-memory'] / 1024 / 1024, 2) }} MB</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Connected Devices --}}
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card text-bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">👥 Connected Devices</h5>
+                    <p class="card-text fs-4">{{ count($active) }}</p>
+                </div>
+            </div>
+        </div>
+
+        {{-- Router IP --}}
+        <div class="col-md-6">
+            <div class="card text-bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">🌐 IP Address</h5>
+                    <p class="card-text fs-5">{{ $ip[0]['address'] ?? 'N/A' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Interfaces Table --}}
+    <div class="card">
+        <div class="card-header">
+            <h5>📊 Interfaces Bandwidth</h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>RX</th>
+                        <th>TX</th>
+                        <th>Running</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($interfaces as $iface)
+                        <tr>
+                            <td>{{ $iface['name'] }}</td>
+                            <td>{{ $iface['type'] }}</td>
+                            <td>{{ $iface['rx-byte'] ?? 'N/A' }}</td>
+                            <td>{{ $iface['tx-byte'] ?? 'N/A' }}</td>
+                            <td>{{ $iface['running'] }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@endsection
