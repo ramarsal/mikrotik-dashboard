@@ -2,101 +2,78 @@
 
 @section('content')
 <div class="container py-4">
-    <h2 class="mb-4 text-center">MikroTik Router Dashboard</h2>
+    <h1 class="mb-4">📶 MikroTik Dashboard</h1>
 
-    <div class="row g-4 mb-4">
-        <!-- Router Info -->
-        <div class="col-md-6">
-            <div class="card shadow-sm border-primary">
-                <div class="card-header bg-primary text-white">
-                    <strong>Router Info</strong>
+    {{-- Top Stats --}}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-bg-primary shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">CPU Load</h5>
+                    <p class="fs-3">{{ $system[0]['cpu-load'] ?? 'N/A' }}%</p>
                 </div>
-                <ul class="list-group list-group-flush">
-                    @foreach ($system[0] as $key => $value)
-                        <li class="list-group-item">
-                            <strong>{{ ucwords(str_replace('-', ' ', $key)) }}:</strong> {{ $value }}
-                        </li>
-                    @endforeach
-                    <li class="list-group-item">
-                        <strong>IP Address:</strong> {{ $ipAddress }}
-                    </li>
-                </ul>
             </div>
         </div>
-
-        <!-- Connected Devices & CPU Load -->
-        <div class="col-md-6">
-            <div class="row g-3">
-                <!-- Connected Devices Card -->
-                <div class="col-12">
-                    <div class="card shadow-sm text-center bg-light">
-                        <div class="card-body">
-                            <h5 class="card-title">Connected Devices</h5>
-                            <p class="display-4 text-primary fw-bold">{{ $connectedDevices }}</p>
-                        </div>
-                    </div>
+        <div class="col-md-3">
+            <div class="card text-bg-success shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Uptime</h5>
+                    <p class="fs-5">{{ $system[0]['uptime'] ?? 'N/A' }}</p>
                 </div>
-
-                <!-- CPU Load Progress -->
-                <div class="col-12">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h6 class="card-title">CPU Load</h6>
-                            @php
-                                $cpuLoad = (int) filter_var($system[0]['cpu-load'], FILTER_SANITIZE_NUMBER_INT);
-                            @endphp
-                            <div class="progress" style="height: 25px;">
-                                <div class="progress-bar bg-success" role="progressbar"
-                                     style="width: {{ $cpuLoad }}%;" aria-valuenow="{{ $cpuLoad }}"
-                                     aria-valuemin="0" aria-valuemax="100">
-                                    {{ $cpuLoad }}%
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-bg-info shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Connected Devices</h5>
+                    <p class="fs-1 fw-bold">{{ $connectedDevices }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-bg-dark shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Router IP</h5>
+                    <p class="fs-6">{{ $ipAddress }}</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Interfaces Table -->
+    {{-- Interface Table --}}
     <div class="card shadow-sm">
-        <div class="card-header bg-dark text-white">
-            <strong>Network Interfaces</strong>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-hover table-bordered m-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Status</th>
-                        <th>Disabled</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($interfaces as $interface)
+        <div class="card-body">
+            <h5 class="card-title">Network Interfaces</h5>
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
                         <tr>
-                            <td>{{ $interface['name'] }}</td>
-                            <td>{{ $interface['type'] }}</td>
-                            <td>
-                                @if($interface['running'] === 'true')
-                                    <span class="badge bg-success">Running</span>
-                                @else
-                                    <span class="badge bg-secondary">Stopped</span>
-                                @endif
-                            </td>
-                            <td>
-                                @if($interface['disabled'] === 'true')
-                                    <span class="badge bg-danger">Yes</span>
-                                @else
-                                    <span class="badge bg-success">No</span>
-                                @endif
-                            </td>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Disabled</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($interfaces as $interface)
+                            <tr>
+                                <td>{{ $interface['name'] }}</td>
+                                <td>{{ $interface['type'] }}</td>
+                                <td>
+                                    @if ($interface['running'] === 'true')
+                                        <span class="badge bg-success">Running</span>
+                                    @else
+                                        <span class="badge bg-secondary">Stopped</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    {{ $interface['disabled'] ?? 'false' }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
