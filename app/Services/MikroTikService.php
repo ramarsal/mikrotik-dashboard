@@ -78,4 +78,29 @@ class MikroTikService
         $query = new Query('/ip/address/print');
         return $this->client->query($query)->read();
     }
+
+    public function getInterfaceTraffic($interface = 'ether1') 
+    {
+        $query = new Query('/interface/monitor-traffic');
+        $query->equal('interface', $interface)->equal('once', 'true');
+        return $this->client->query($query)->read();
+    }
+    
+    public function getActiveLeases()
+    {
+        if ($this->useMock || !$this->client) {
+            return [
+                ['mac-address' => '00:11:22:33:44:55', 'address' => '192.168.88.100', 'status' => 'bound'],
+                ['mac-address' => '66:77:88:99:AA:BB', 'address' => '192.168.88.101', 'status' => 'bound'],
+            ]; // Sample mock data
+        }
+
+        $query = new Query('/ip/dhcp-server/lease/print');
+        $leases = $this->client->query($query)->read();
+
+        return array_filter($leases, function ($lease) {
+        return isset($lease['status']) && $lease['status'] === 'bound';
+        });
+    }
+
 }
